@@ -1,0 +1,30 @@
+import mongoose from 'mongoose'
+
+const riverSchema = mongoose.Schema({
+    creator:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:'user'
+    },
+    land:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:'land'
+    },
+    name: {
+        type: String,
+    },
+    desc: {
+        type: String,
+    },
+    icon: {
+        type: String,
+    },
+    createdAt: { 
+        type: Date, 
+        default: Date.now 
+    }
+})
+
+const River = mongoose.model('river', riverSchema)
+
+
+export default River
