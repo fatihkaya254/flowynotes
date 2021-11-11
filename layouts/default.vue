@@ -6,15 +6,8 @@
 
 <style>
 html {
-  font-family:
-    'Source Sans Pro',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    sans-serif;
+  font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-size: 16px;
   word-spacing: 1px;
   -ms-text-size-adjust: 100%;
@@ -59,5 +52,68 @@ html {
 .button--grey:hover {
   color: #fff;
   background-color: #35495e;
+}
+
+.new--title {
+  font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  word-spacing: 1px;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+  border: none;
+  text-decoration: none;
+  text-align: center;
+  background: none;
+  font-size: 12pt;
+  width: 200px;
+  padding: 10px 30px;
+  border-bottom: 1px solid #35495e;
+}
+.new--title:focus {
+  outline: none;
+}
+.new--desc:focus {
+  outline: none;
+}
+.new--desc {
+  font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  word-spacing: 1px;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+  border: none;
+  text-decoration: none;
+  text-align: center;
+  background: none;
+  font-size: 12pt;
+  padding: 10px 30px;
+  width: 80%;
+  max-width: 600px;
+  border-bottom: 1px solid #35495e;
+}
+
+::-webkit-scrollbar {
+  width: 1px;
+  border-radius: 1em;
+}
+
+::-webkit-scrollbar-track {
+  background: #ffffff;
+  border-radius: 1em;
+}
+::-webkit-scrollbar-thumb {
+  background: #000;
+  border-radius: 1em;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 </style>

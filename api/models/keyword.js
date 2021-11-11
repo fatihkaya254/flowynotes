@@ -3,17 +3,22 @@ import mongoose from 'mongoose'
 const keywordSchema = mongoose.Schema({
     creator:{
         type: mongoose.Schema.Types.ObjectId,
-        ref:'user'
+        ref:'user',
+        required: true
     },
     river:{
         type: mongoose.Schema.Types.ObjectId,
-        ref:'river'
+        ref:'river',
+        required: true
+
     },
     name: {
         type: String,
+        required: true
     },
     desc: {
         type: String,
+        required: true,
     },
     createdAt: { 
         type: Date, 

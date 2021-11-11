@@ -3,14 +3,17 @@ import mongoose from 'mongoose'
 const riverSchema = mongoose.Schema({
     creator:{
         type: mongoose.Schema.Types.ObjectId,
-        ref:'user'
+        ref:'user',
+        required: true
     },
     land:{
         type: mongoose.Schema.Types.ObjectId,
-        ref:'land'
+        ref:'land',
+        required: true
     },
     name: {
         type: String,
+        required: true
     },
     desc: {
         type: String,

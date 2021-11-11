@@ -2,6 +2,10 @@ import express from "express";
 const app = express();
 import mongoose from "mongoose";
 import User from "./controllers/user";
+import Description from "./controllers/description";
+import Keyword from "./controllers/keyword";
+import Land from "./controllers/land";
+import River from "./controllers/river";
 import Log from "./middlewares/log";
 import Multer from "multer";
 import cors from "cors";
@@ -96,6 +100,31 @@ app.post("/authGoogle", User.authGoogle);
 app.post("/auth", User.auth);
 app.put("/updateProfile", User.update);
 app.post("/addUser", User.newUser);
+
+//-------------------------------------------- Land -------------------------------------------- //
+app.post("/deleteLand", Land.delete);
+app.put("/updateLand", Land.update);
+app.post("/newLand", Land.new);
+app.post("/getLand", Land.usersLand);
+
+//-------------------------------------------- River -------------------------------------------- //
+app.post("/deleteRiver", River.delete);
+app.put("/updateRiver", River.update);
+app.post("/newRiver", River.new);
+app.post("/getRiver", River.landsRiver);
+
+//-------------------------------------------- Keyword -------------------------------------------- //
+app.post("/deleteKeyword", Keyword.delete);
+app.put("/updateKeyword", Keyword.update);
+app.post("/newKeyword", Keyword.new);
+app.post("/getKeyword", Keyword.riversKeyword);
+
+//-------------------------------------------- Decription -------------------------------------------- //
+app.post("/deleteDescription", Description.delete);
+app.put("/updateDescription", Description.update);
+app.post("/newDescription", Description.new);
+app.post("/getDescription", Description.keywordsDescription);
+
 
 module.exports = {
   path: "/api",

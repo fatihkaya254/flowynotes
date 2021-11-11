@@ -3,17 +3,21 @@ import mongoose from 'mongoose'
 const descriptionSchema = mongoose.Schema({
     creator:{
         type: mongoose.Schema.Types.ObjectId,
-        ref:'user'
+        required: true,
+        ref:'user',
     },
     keyword:{
         type: mongoose.Schema.Types.ObjectId,
-        ref:'keyword'
+        ref:'keyword',
+        required: true
+
     },
     pic: {
         type: String,
     },
     desc: {
         type: String,
+        required: true
     },
     createdAt: { 
         type: Date, 

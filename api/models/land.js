@@ -3,7 +3,8 @@ import mongoose from 'mongoose'
 const landSchema = mongoose.Schema({
     creator:{
         type: mongoose.Schema.Types.ObjectId,
-        ref:'user'
+        ref:'user',
+        required: true
     },
     editors:{
         type: [mongoose.Schema.Types.ObjectId],
@@ -15,6 +16,7 @@ const landSchema = mongoose.Schema({
     },
     name: {
         type: String,
+        required: true
     },
     desc: {
         type: String,
