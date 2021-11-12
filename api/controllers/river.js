@@ -25,8 +25,9 @@ exports.delete = async (req, res) => {
   let id = req.body.id
   let who = req.body.who
   try {
-    River.findByIdAndDelete({ _id: id }, { creator: who }, (river) => {
+    River.findByIdAndDelete({ _id: id }, { creator: who }, (err, river) => {
       res.status(200).json({
+        err,
         river,
       })
     })

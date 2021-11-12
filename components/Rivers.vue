@@ -4,6 +4,8 @@ div
     .flip(v-for="river in river()" v-show="id == river._id || id == ''")
       .front(:style="[river.cover ? {backgroundImage: 'url(' + river.cover + ')'} : {backgroundImage: 'url(https://source.unsplash.com/XQ3qOs6g9EY)'}]") 
         h1(class="text-shadow") {{river.name}}
+        .back-button(@click="edit(river._id)") Edit
+        .back-button(@click="select(river._id)") Go
       .back
         div(style="overflow: auto;")
           p {{river.desc}}
@@ -11,7 +13,7 @@ div
         .back-button(@click="select(river._id)") Go
   .form
     input(type="text" v-model="title" placeholder="title" class="new--title" )
-    input(type="text" v-model="desc" placeholder="description" class="new--desc"  )
+    input(type="text" v-model="desc" placeholder="description"  v-on:keyup.13="add()" class="new--desc"  )
     .button--grey(v-if="!change" style="cursor: pointer;" @click="add()") New
     .button--grey(v-if="change" style="cursor: pointer;" @click="changeL()") Edit
 </template>
@@ -28,10 +30,18 @@ export default {
     }
   },
   methods: {
-    ...mapActions('rivers', ['getRivers', 'changeRiver','selectRiver', 'addRiver']),
+    ...mapActions('rivers', [
+      'getRivers',
+      'changeRiver',
+      'selectRiver',
+      'addRiver',
+      'deleteRiver',
+    ]),
     ...mapGetters(['userId']),
     ...mapGetters('rivers', ['river', 'isRiverSelected', 'selectedRiver']),
     ...mapGetters('lands', ['selectedLand']),
+    ...mapGetters('keywords', ['keyword']),
+    ...mapActions('keywords', ['getKeywords', 'deleteKeyword']),
     select: function (river) {
       this.selectRiver(river)
     },
@@ -40,11 +50,25 @@ export default {
         name: this.title,
         desc: this.desc,
         creator: this.userId(),
-        land: this.selectedLand()._id
+        land: this.selectedLand()._id,
       }
       this.addRiver(river)
     },
+    delRiv: async function () {
+      await this.getKeywords(this.id)
+      for (const k in this.keyword()) {
+        this.deleteKeyword(k)
+      }
+      this.deleteRiver(this.id)
+      this.change = false
+      this.id = ''
+      this.desc = ''
+      this.title = ''
+    },
     changeL: function () {
+      if (this.title == '') {
+        return this.delRiv()
+      }
       const changes = {
         value: this.title,
         where: 'name',
@@ -58,17 +82,17 @@ export default {
       }
       this.changeRiver(changes2)
       this.change = false
-      this.id = ""
-      this.desc = ""
-      this.title = ""
+      this.id = ''
+      this.desc = ''
+      this.title = ''
     },
-    edit: function(id){
+    edit: function (id) {
       const river = this.river()[id]
       this.title = river.name
       this.desc = river.desc
       this.id = id
       this.change = true
-    }
+    },
   },
   mounted() {
     this.getRivers(this.selectedLand()._id)

@@ -1,19 +1,13 @@
 <template lang="pug">
 div
   .line(ref="main" @click="limit=false")
-    .flip(v-for="keyword in keyword()" ref="box" v-show="id == keyword._id || id == ''")
-      .front(:style="{background: 'none'}" ) 
-        h1(class="text-shadow" @click="select(keyword._id)") {{keyword.name}}
-  .form
-    input(type="text" v-model="title" placeholder="title" class="new--title" )
-    input(type="text" v-model="desc" placeholder="main description" class="new--desc"  )
-    .group  
-      .button--grey(v-if="!change" style="cursor: pointer;" @click="add()") New
-      .button--grey(v-if="!change" style="cursor: pointer;" @click="list()") List
-      .button--grey(v-if="!change" style="cursor: pointer;" @click="mix()") mix
-      .button--grey(v-if="change" style="cursor: pointer;" @click="changeL()") Edit
-      .button--grey(v-if="change" style="cursor: pointer;" @click="cancel()") Cancel
-  .limit(v-show="limit") Limit is up to 30 keywords
+    .flip(ref="box")
+      .front(:style="{background: 'none'}") 
+        h1(class="text-shadow") {{selectedKeyword().name}}
+    .form(ref="form")
+      input(v-for="d in description()" :style="[changed == d._id ? {color: 'green'} : {}]" type="text" v-model="newDesc[d._id]" :placeholder="d.name" class="new--desc" v-on:keyup.13="edit(d._id)"  )
+      input(type="text" v-model="desc" placeholder="description" class="new--desc" v-on:keyup.13="add()" )
+    .button--grey(style="cursor: pointer;" @click="selectKeyword('')") Close
 </template>
 
 <script>
@@ -21,117 +15,73 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   data() {
     return {
+      newDesc: [],
       title: '',
       desc: '',
+      changed: '',
       id: '',
       change: false,
       limit: false,
     }
   },
   methods: {
+    ...mapActions('descriptions', [
+      'getDescriptions',
+      'changeDescription',
+      'selectDescription',
+      'addDescription',
+      'deleteDescription',
+    ]),
     ...mapActions('keywords', [
-      'getKeywords',
-      'changeKeyword',
       'selectKeyword',
-      'addKeyword',
-      'deleteKeyword',
     ]),
     ...mapGetters(['userId']),
-    ...mapGetters('keywords', [
-      'keyword',
-      'isKeywordSelected',
-      'selectedKeyword',
+    ...mapGetters('descriptions', [
+      'description',
+      'isDescriptionSelected',
+      'selectedDescription',
     ]),
-    ...mapGetters('rivers', ['selectedRiver']),
-    select: async function (keyword) {
-      await this.selectKeyword('')
-      this.selectKeyword(keyword)
-      this.edit(keyword)
+    ...mapGetters('keywords', ['selectedKeyword']),
+    select: function (description) {
+      this.selectDescription(description)
     },
-    cancel: function () {
-      this.selectKeyword('')
-      this.title = ''
-      this.desc = ''
-      this.change = false
-    },
-    add: function () {
-      if (this.$refs.box != undefined && this.$refs.box.length >= 30) {
-        this.limit = true
-        return
+    add: async function () {
+      var count = 0
+      for(const c in this.description()){
+        count++
       }
-      if (this.title == '') return alert('Empty Title')
       if (this.desc == '') return alert('Empty Description')
-      const keyword = {
-        name: this.title,
+      if (count >= 5) return alert('Limit is up to 5 description')
+      const description = {
         desc: this.desc,
         creator: this.userId(),
-        river: this.selectedRiver()._id,
+        keyword: this.selectedKeyword()._id,
       }
-      this.addKeyword(keyword)
+      await this.addDescription(description)
       this.mix()
       this.desc = ''
-      this.title = ''
+      for (const [k, v] of Object.entries(this.description())) {
+        if (v != undefined) this.$set(this.newDesc, k, v.desc)
+      }
     },
-    changeL: function () {
-      if (this.title == '') {
-        this.deleteKeyword(this.selectedKeyword()._id, this.userId())
-        this.selectKeyword('')
-        this.change = false
-        this.id = ''
-        this.desc = ''
-        this.title = ''
+    edit: async function (id) {
+      if (this.newDesc[id] == '') {
+        this.deleteDescription(id, this.userId())
         return
       }
       const changes = {
-        value: this.title,
-        where: 'name',
-        id: this.selectedKeyword()._id,
-      }
-      this.changeKeyword(changes)
-      const changes2 = {
-        value: this.desc,
+        value: this.newDesc[id],
         where: 'desc',
-        id: this.selectedKeyword()._id,
+        id: id,
       }
-      this.changeKeyword(changes2)
-      this.selectKeyword('')
-      this.change = false
-      this.id = ''
-      this.desc = ''
-      this.title = ''
-    },
-    edit: function (id) {
-      const keyword = this.keyword()[id]
-      this.title = keyword.name
-      this.desc = keyword.desc
-      this.change = true
+      await this.changeDescription(changes)
+      this.changed = id
     },
     list: function () {
-      if (
-        ((this.$refs.main.clientWidth - 70) / 150) *
-          ((this.$refs.main.clientHeight - 70) / 100) <
-        31
-      ) {
-        let coordinates = []
-        for (let x = 1; x < (this.$refs.main.clientWidth - 10) / 50; x++) {
-          for (let y = 1; y < (this.$refs.main.clientHeight - 20) / 50; y++) {
-            coordinates.push([x * 60, y * 60])
-          }
-        }
-        for (let index = 0; index < this.$refs.box.length; index++) {
-          const box = this.$refs.box[index]
-          const rand = this.$refs.box.indexOf(box)
-          const coor = coordinates[rand]
-          box.style.left = coor[0] + 'px'
-          box.style.top = coor[1] + 'px'
-          box.style.fontSize = '12pt'
-        }
-        return
-      }
       let coordinates = []
-      for (let x = 0; x < (this.$refs.main.clientWidth - 70) / 150; x++) {
-        for (let y = 0; y < (this.$refs.main.clientHeight - 70) / 100; y++) {
-          coordinates.push([(x + 1) * 150, (y + 1) * 100])
+      for (let x = 1; x < (this.$refs.main.clientWidth - 70) / 150; x++) {
+        for (let y = 1; y < (this.$refs.main.clientHeight - 70) / 100; y++) {
+          coordinates.push([x * 150, y * 100])
         }
       }
       for (let index = 0; index < this.$refs.box.length; index++) {
@@ -144,35 +94,10 @@ export default {
       }
     },
     mix: async function () {
-      await this.$nextTick()
       if (this.$refs.box == undefined) {
         return 0
       }
-      if (this.$refs.main.clientWidth < 980) {
-        let coordinates = []
-        for (let x = 1; x < this.$refs.main.clientWidth / 50; x++) {
-          for (let y = 1; y < this.$refs.main.clientHeight / 50; y++) {
-            coordinates.push([x * 60 - 30, y * 60])
-          }
-        }
-        var set = []
-        var lc = []
-        for (let index = 0; index < this.$refs.box.length; index++) {
-          const box = this.$refs.box[index]
-          const rand = 0
-          do {
-            rand = Math.floor(Math.random() * coordinates.length)
-          } while (set.includes(coordinates[rand]))
-          const coor = coordinates[rand]
-          lc = coor
-          set.push(coor)
-          box.style.left = coor[0] + 'px'
-          box.style.top = coor[1] + 'px'
-          box.style.fontSize = Math.floor(Math.random() * (22 - 12) + 12) + 'pt'
-        }
-        return
-      }
-
+      await this.$nextTick()
       let coordinates = []
       for (let x = 1; x < (this.$refs.main.clientWidth - 70) / 100; x++) {
         for (let y = 1; y < (this.$refs.main.clientHeight - 70) / 100; y++) {
@@ -185,7 +110,12 @@ export default {
         const box = this.$refs.box[index]
         const rand = 0
         do {
-          rand = Math.floor(Math.random() * coordinates.length)
+          rand = Math.floor(
+            Math.random() *
+              (parseInt((this.$refs.main.clientWidth - 70) / 100, 10) *
+                parseInt((this.$refs.main.clientHeight - 70) / 100, 10))
+          )
+          console.log(set.includes(coordinates[rand]))
         } while (set.includes(coordinates[rand]))
         const coor = coordinates[rand]
         lc = coor
@@ -197,7 +127,10 @@ export default {
     },
   },
   async mounted() {
-    await this.getKeywords(this.selectedRiver()._id)
+    await this.getDescriptions(this.selectedKeyword()._id)
+    for (const [k, v] of Object.entries(this.description())) {
+      if (v != undefined) this.$set(this.newDesc, k, v.desc)
+    }
     // wait for $refs to be available
     await this.mix()
   },
@@ -224,8 +157,15 @@ export default {
   font-family: 'Roboto Mono';
   padding: 1em;
   height: 60vh;
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+  justify-content: center;
   width: 80vw;
+  max-width: 700px;
+  max-height: 500px;
   margin: auto;
+  background: #000000f3;
 }
 .shade {
   position: absolute;
@@ -241,7 +181,7 @@ export default {
 }
 // base
 .flip {
-  position: absolute;
+  position: relative;
   h1 {
     font-size: 1em;
   }
@@ -291,7 +231,7 @@ export default {
 // custom
 .flip {
   cursor: pointer;
-  position: absolute;
+  position: relative;
   display: inline-block;
   > .front,
   > .back {
@@ -318,6 +258,7 @@ export default {
 }
 
 .text-shadow {
+  font-size: 16pt;
   text-shadow: 1px 1px rgba(0, 0, 0, 0.04), 2px 2px rgba(0, 0, 0, 0.04),
     3px 3px rgba(0, 0, 0, 0.04), 4px 4px rgba(0, 0, 0, 0.04),
     0.125rem 0.125rem rgba(0, 0, 0, 0.04), 6px 6px rgba(0, 0, 0, 0.04),
@@ -336,7 +277,7 @@ export default {
   align-items: center;
   justify-content: center;
   gap: 20px;
-  width: 100vw;
+  width: 100%;
 }
 
 .limit {

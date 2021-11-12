@@ -5,9 +5,13 @@ exports.update = async (req, res) => {
   let where = req.body.where
   let value = req.body.value
   try {
-    Description.findByIdAndUpdate({ _id: id }, { [where]: value }, (description) => {
+    Description.findByIdAndUpdate(      { _id: id },
+      { [where]: value },
+      { new: true },
+      (err, description) => {
       res.status(200).json({
         description,
+        err,
       })
     })
   } catch (error) {
@@ -19,9 +23,10 @@ exports.delete = async (req, res) => {
     let id = req.body.id
     let who = req.body.who
     try {
-      Description.findByIdAndDelete({ _id: id }, { creator: who}, (description) => {
+      Description.findByIdAndDelete({ _id: id }, { creator: who}, (err, description) => {
         res.status(200).json({
           description,
+          err,
         })
       })
     } catch (error) {

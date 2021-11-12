@@ -14,12 +14,19 @@ export default {
       vuexContext.commit('newKeyword', newKeyword)
     })
   },
+  deleteKeyword: function (vuexContext, id, who) {
+    return this.$axios.post('/deleteKeyword', { id, who }).then((res) => {
+      var deletedKeyword = res.data.keyword
+      vuexContext.commit('delKeyword', deletedKeyword)
+    })
+  },
   changeKeyword(vuexContext, changes) {
     let id = changes.id
     let where = changes.where
     let value = changes.value
     this.$axios.put('/updateKeyword', { id, where, value }).then((res) => {
       var newKeyword = res.data.keyword
+      console.log(newKeyword);
       vuexContext.commit('newKeyword', newKeyword)
     })
   },

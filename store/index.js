@@ -114,7 +114,7 @@ export const actions = {
       .then(res => {
         if (res.data.auth) {
           dispatch("login", res.data.authKey);
-          this.$router.push('/myrecords');
+          this.$router.push('/sandbox');
         } else {
           console.log('Login Failed');
         }

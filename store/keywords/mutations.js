@@ -7,5 +7,8 @@ export default {
     },
     selectKeyword(state, keyword){
       state.selectedKeyword = state.keywords[keyword]
-    }
+    },
+    delKeyword(state, deletedKeyword) {
+      this._vm.$delete(state.keywords, deletedKeyword._id)
+    },
 };

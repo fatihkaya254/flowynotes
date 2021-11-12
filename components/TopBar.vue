@@ -3,10 +3,10 @@
     .navigation
       .go(v-if="isLandSelected()" @click="goTo(0)" :style="[selectedLand().cover ? {backgroundImage: 'url(' + selectedLand().cover + ')'} : {backgroundImage: 'url(https://source.unsplash.com/XQ3qOs6g9EY)'}]") {{selectedLand().name}} 
       .go(v-if="isRiverSelected()" @click="goTo(1)" :style="[selectedRiver().cover ? {backgroundImage: 'url(' + selectedRiver().cover + ')'} : {backgroundImage: 'url(https://source.unsplash.com/XQ3qOs6g9EY)'}]") {{selectedRiver().name}}
+      .go(v-if="isKeywordSelected()" @click="goTo(2)" :style="[selectedKeyword().cover ? {backgroundImage: 'url(' + selectedKeyword().cover + ')'} : {backgroundImage: 'url(https://source.unsplash.com/XQ3qOs6g9EY)'}]") {{selectedKeyword().name}}
     .nameBox {{userName()}} {{userSurname()}} 
     img(:src="userPic()")
 </template>
-
 <script>
 import { mapActions, mapGetters } from 'vuex'
 export default {
@@ -18,11 +18,14 @@ export default {
     ...mapGetters(['userName', 'userSurname', 'userPic']),
     ...mapActions('lands', ['selectLand']),
     ...mapActions('rivers', ['selectRiver']),
+    ...mapActions('keywords', ['selectKeyword']),
     ...mapGetters('lands', ['isLandSelected', 'selectedLand']),
     ...mapGetters('rivers', ['isRiverSelected', 'selectedRiver']),
+    ...mapGetters('keywords', ['isKeywordSelected', 'selectedKeyword']),
     goTo: function (where) {
       if(where == 0) this.selectLand("")
       if(where <= 1) this.selectRiver("")
+      if(where <= 2) this.selectKeyword("")
     }
   },
 }

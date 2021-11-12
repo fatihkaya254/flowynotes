@@ -106,6 +106,7 @@ app.post("/deleteLand", Land.delete);
 app.put("/updateLand", Land.update);
 app.post("/newLand", Land.new);
 app.post("/getLand", Land.usersLand);
+app.post("/addEditorToLand", Land.addEditor);
 
 //-------------------------------------------- River -------------------------------------------- //
 app.post("/deleteRiver", River.delete);

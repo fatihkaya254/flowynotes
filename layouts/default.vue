@@ -53,7 +53,18 @@ html {
   color: #fff;
   background-color: #35495e;
 }
-
+    .shade {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-image: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0.7) 10%,
+        rgba(0, 0, 0, 0) 90%
+      );
+    }
 .new--title {
   font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -69,7 +80,9 @@ html {
   text-align: center;
   background: none;
   font-size: 12pt;
+  height: 20px;
   width: 200px;
+  color: white;
   padding: 10px 30px;
   border-bottom: 1px solid #35495e;
 }
@@ -90,6 +103,7 @@ html {
   -webkit-font-smoothing: antialiased;
   box-sizing: border-box;
   border: none;
+  height: 20px;
   text-decoration: none;
   text-align: center;
   background: none;
@@ -98,8 +112,13 @@ html {
   width: 80%;
   max-width: 600px;
   border-bottom: 1px solid #35495e;
+  color: white;
 }
-
+.new--desc::placeholder {
+  color: gray;
+}.new--title::placeholder {
+  color: gray;
+}
 ::-webkit-scrollbar {
   width: 1px;
   border-radius: 1em;

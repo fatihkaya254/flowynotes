@@ -4,6 +4,8 @@ div
     .flip(v-for="land in land()" v-show="id == land._id || id == ''")
       .front(:style="[land.cover ? {backgroundImage: 'url(' + land.cover + ')'} : {backgroundImage: 'url(https://source.unsplash.com/XQ3qOs6g9EY)'}]") 
         h1(class="text-shadow") {{land.name}}
+        .back-button(@click="edit(land._id)") Edit
+        .back-button(@click="select(land._id)") Go
       .back
         div(style="overflow: auto;")
           p {{land.desc}}
@@ -11,9 +13,10 @@ div
         .back-button(@click="select(land._id)") Go
   .form
     input(type="text" v-model="title" placeholder="title" class="new--title" )
-    input(type="text" v-model="desc" placeholder="description" class="new--desc"  )
+    input(type="text" v-model="desc" placeholder="description"  v-on:keyup.13="add()" class="new--desc"  )
     .button--grey(v-if="!change" style="cursor: pointer;" @click="add()") New
     .button--grey(v-if="change" style="cursor: pointer;" @click="changeL()") Edit
+    .button--grey(v-if="change" style="cursor: pointer;" @click="addUser()") Add User
 </template>
 
 <script>
@@ -33,6 +36,12 @@ export default {
     ...mapGetters('lands', ['land', 'isLandSelected', 'selectedLand']),
     select: function (land) {
       this.selectLand(land)
+    },
+    addUser: function () {
+      var phone=prompt("please enter users phone number");
+      this.$axios.post('/addEditorToLand', phone).then((res) => {
+      console.log(res.status);
+    })
     },
     add: function () {
       const land = {

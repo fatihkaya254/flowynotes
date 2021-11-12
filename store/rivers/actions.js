@@ -14,6 +14,12 @@ export default {
       vuexContext.commit('newRiver', newRiver)
     })
   },
+  deleteRiver: function (vuexContext, id, who) {
+    return this.$axios.post('/deleteRiver', { id, who }).then((res) => {
+      var deletedRiver = res.data.river
+      vuexContext.commit('delRiver', deletedRiver)
+    })
+  },
   changeRiver(vuexContext, changes) {
     let id = changes.id
     let where = changes.where
