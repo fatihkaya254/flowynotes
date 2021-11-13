@@ -1,5 +1,5 @@
 import Land from '../models/land.js'
-import User from "../models/user.js";
+import User from '../models/user.js'
 
 exports.update = async (req, res) => {
   let id = req.body.id
@@ -47,20 +47,34 @@ exports.new = async (req, res) => {
   }
 }
 
-exports.addEditor=async(req,res) => {
+exports.addEditor = async (req, res) => {
   const phone = req.body.phone
-  console.log(phone);
+  const id = req.body.id
+  console.log(phone)
   try {
-    const user = await User.findOne({phone})
-      console.log(user);
-      res.status(200)
+    const user = await User.findOne({ phone })
+    Land.findByIdAndUpdate(
+      { _id: id },
+      { $push: { editors: user._id } },
+      { new: true },
+      (err, land) => {
+        console.log(land)
+        res.status(200).json({
+          land,
+          err,
+        })
+      }
+    )
   } catch (error) {
-    console.log(error);
+    console.log(error)
+    res.status(400).json({ message: error })
   }
 }
 exports.usersLand = async (req, res) => {
   const user = req.body.user
-  Land.find({ $or:[ {creator:user}, {editors: {$elemMatch : { $eq: user}}}]}).then((lands) => {
+  Land.find({
+    $or: [{ creator: user }, { editors: { $elemMatch: { $eq: user } } }],
+  }).then((lands) => {
     var landMap = {}
     lands.forEach(function (land) {
       landMap[land._id] = land

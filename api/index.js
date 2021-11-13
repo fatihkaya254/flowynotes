@@ -2,6 +2,7 @@ import express from "express";
 const app = express();
 import mongoose from "mongoose";
 import User from "./controllers/user";
+import Backup from "./controllers/backup";
 import Description from "./controllers/description";
 import Keyword from "./controllers/keyword";
 import Land from "./controllers/land";
@@ -125,6 +126,8 @@ app.post("/deleteDescription", Description.delete);
 app.put("/updateDescription", Description.update);
 app.post("/newDescription", Description.new);
 app.post("/getDescription", Description.keywordsDescription);
+//-------------------------------------------- Backup -------------------------------------------- //
+app.post("/backupAll", Backup.backupAll);
 
 
 module.exports = {

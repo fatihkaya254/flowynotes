@@ -7,7 +7,8 @@
             Rivers(v-if="isLandSelected() && !isRiverSelected()")
             Keywords(v-if="isLandSelected() && isRiverSelected()")
             .desc
-              Descriptions(v-if="isKeywordSelected()")
+              //Descriptions(v-if="isKeywordSelected()")
+            SpeedRead(v-if="isKeywordSelected()")
 </template>
 
 <script>
@@ -16,6 +17,7 @@ import Lands from '@/components/Lands.vue'
 import Rivers from '@/components/Rivers.vue'
 import Keywords from '@/components/Keywords.vue'
 import Descriptions from '@/components/Descriptions.vue'
+import SpeedRead from '~/components/SpeedRead.vue'
 import { mapActions, mapGetters } from 'vuex'
 export default {
   data() {
@@ -34,6 +36,7 @@ export default {
     Rivers,
     Keywords,
     Descriptions,
+    SpeedRead,
   },
 }
 </script>

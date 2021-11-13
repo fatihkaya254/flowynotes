@@ -15,6 +15,7 @@ div
     input(type="text" v-model="title" placeholder="title" class="new--title" )
     input(type="text" v-model="desc" placeholder="description"  v-on:keyup.13="add()" class="new--desc"  )
     .button--grey(v-if="!change" style="cursor: pointer;" @click="add()") New
+    .button--grey(v-if="!change" style="cursor: pointer;" @click="backUp()") Back Up
     .button--grey(v-if="change" style="cursor: pointer;" @click="changeL()") Edit
     .button--grey(v-if="change" style="cursor: pointer;" @click="addUser()") Add User
 </template>
@@ -31,17 +32,34 @@ export default {
     }
   },
   methods: {
-    ...mapActions('lands', ['getLands', 'changeLand','selectLand', 'addLand']),
-    ...mapGetters(['userId']),
+    ...mapActions('lands', ['getLands', 'changeLand', 'selectLand', 'addLand']),
+    ...mapGetters(['userId', 'userName']),
     ...mapGetters('lands', ['land', 'isLandSelected', 'selectedLand']),
     select: function (land) {
       this.selectLand(land)
     },
-    addUser: function () {
-      var phone=prompt("please enter users phone number");
-      this.$axios.post('/addEditorToLand', phone).then((res) => {
-      console.log(res.status);
-    })
+    download(content, fileName, contentType) {
+      const a = document.createElement('a')
+      const file = new Blob([content], { type: contentType })
+      a.href = URL.createObjectURL(file)
+      a.download = fileName
+      a.click()
+    },
+
+    addUser: async function () {
+      var phone = prompt('please enter users phone number')
+      await this.$axios
+        .post('/addEditorToLand', { phone, id: this.id })
+        .then((res) => {
+          console.log(res.status)
+        })
+    },
+    backUp: async function () {
+      await this.$axios
+        .post('/backupAll', { user: this.userId() })
+        .then((res) => {
+          this.download(JSON.stringify(res.data), this.userName() + '\'sFlowiesBackUp.json', 'text/plain')
+        })
     },
     add: function () {
       const land = {
@@ -65,17 +83,17 @@ export default {
       }
       this.changeLand(changes2)
       this.change = false
-      this.id = ""
-      this.desc = ""
-      this.title = ""
+      this.id = ''
+      this.desc = ''
+      this.title = ''
     },
-    edit: function(id){
+    edit: function (id) {
       const land = this.land()[id]
       this.title = land.name
       this.desc = land.desc
       this.id = id
       this.change = true
-    }
+    },
   },
   mounted() {
     this.getLands(this.userId())
