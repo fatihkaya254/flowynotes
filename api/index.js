@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import User from "./controllers/user";
 import Backup from "./controllers/backup";
 import Description from "./controllers/description";
+import Test from "./controllers/test";
 import Keyword from "./controllers/keyword";
 import Land from "./controllers/land";
 import River from "./controllers/river";
@@ -126,6 +127,12 @@ app.post("/deleteDescription", Description.delete);
 app.put("/updateDescription", Description.update);
 app.post("/newDescription", Description.new);
 app.post("/getDescription", Description.keywordsDescription);
+
+//-------------------------------------------- Test -------------------------------------------- //
+app.post("/deleteTest", Test.delete);
+app.put("/updateTest", Test.update);
+app.post("/newTest", Test.new);
+app.post("/getTest", Test.keywordsTest);
 //-------------------------------------------- Backup -------------------------------------------- //
 app.post("/backupAll", Backup.backupAll);
 

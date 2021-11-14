@@ -4,6 +4,8 @@ export default {
     },
     newKeyword(state, newKeyword) {
       this._vm.$set(state.keywords, newKeyword._id, newKeyword)
+      state.selectedKeyword = newKeyword
+
     },
     selectKeyword(state, keyword){
       state.selectedKeyword = state.keywords[keyword]

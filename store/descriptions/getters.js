@@ -11,5 +11,14 @@ export default {
         } else {
             return true
         }
+    },
+    speedRead(vuexContext){
+        return vuexContext.speedRead
+    },
+    test(vuexContext){
+        return vuexContext.test
+    },
+    wordPerLine(vuexContext){
+        return vuexContext.wordPerLine
     }
 };

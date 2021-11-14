@@ -1,4 +1,7 @@
 export default () => ({
     descriptions: [],
-    selectedDescription: {}
+    selectedDescription: {},
+    speedRead: false,
+    test: false,
+    wordPerLine: 3,
 });

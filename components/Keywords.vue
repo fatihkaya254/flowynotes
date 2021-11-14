@@ -8,11 +8,13 @@ div
     input(type="text" v-model="title" placeholder="title" class="new--title" )
     input(type="text" v-model="desc" placeholder="main description" class="new--desc"  )
     .group  
-      .button--grey(v-if="!change" style="cursor: pointer;" @click="add()") New
-      .button--grey(v-if="!change" style="cursor: pointer;" @click="list()") List
-      .button--grey(v-if="!change" style="cursor: pointer;" @click="mix()") mix
-      .button--grey(v-if="change" style="cursor: pointer;" @click="changeL()") Edit
-      .button--grey(v-if="change" style="cursor: pointer;" @click="cancel()") Cancel
+      .button--grey(v-if="!selectedKeyword()" style="cursor: pointer;" @click="add()") New
+      .button--grey(v-if="!selectedKeyword()" style="cursor: pointer;" @click="list()") List
+      .button--grey(v-if="!selectedKeyword()" style="cursor: pointer;" @click="mix()") Mix
+      .button--grey(v-if="!selectedKeyword()" style="cursor: pointer;" @click="tour()") Tour
+      .button--grey(v-if="!selectedKeyword()" style="cursor: pointer;" @click="quiz()") Quiz
+      .button--grey(v-if="selectedKeyword()" style="cursor: pointer;" @click="changeL()") Edit
+      .button--grey(v-if="selectedKeyword()" style="cursor: pointer;" @click="cancel()") Cancel
   .limit(v-show="limit") Limit is up to 30 keywords
 </template>
 
@@ -36,7 +38,9 @@ export default {
       'addKeyword',
       'deleteKeyword',
     ]),
+    ...mapActions('descriptions', ['setSpeedRead', 'setTest', 'setWordPerLine']),
     ...mapGetters(['userId']),
+    ...mapGetters('descriptions', ['wordPerLine']),
     ...mapGetters('keywords', [
       'keyword',
       'isKeywordSelected',
@@ -53,6 +57,19 @@ export default {
       this.title = ''
       this.desc = ''
       this.change = false
+    },
+    quiz: function () {
+      this.setTest(true)
+    },
+
+    tour: function () {
+      let wpl = prompt('Set Word Per Line:', this.wordPerLine())
+      if (isNaN(wpl)) {
+        alert('Not a Number!')
+        return this.tour()
+      }
+      this.setWordPerLine(wpl)
+      this.setSpeedRead(true)
     },
     add: function () {
       if (this.$refs.box != undefined && this.$refs.box.length >= 30) {
@@ -113,9 +130,11 @@ export default {
         31
       ) {
         let coordinates = []
+        var vertical = 30
         for (let x = 1; x < (this.$refs.main.clientWidth - 10) / 50; x++) {
+          vertical += 30
           for (let y = 1; y < (this.$refs.main.clientHeight - 20) / 50; y++) {
-            coordinates.push([x * 60, y * 60])
+            coordinates.push([x * 60, (y * 60 + vertical)])
           }
         }
         for (let index = 0; index < this.$refs.box.length; index++) {
@@ -198,6 +217,7 @@ export default {
   },
   async mounted() {
     await this.getKeywords(this.selectedRiver()._id)
+    this.selectKeyword('')
     // wait for $refs to be available
     await this.mix()
   },

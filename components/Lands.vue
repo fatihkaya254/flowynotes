@@ -14,10 +14,11 @@ div
   .form
     input(type="text" v-model="title" placeholder="title" class="new--title" )
     input(type="text" v-model="desc" placeholder="description"  v-on:keyup.13="add()" class="new--desc"  )
-    .button--grey(v-if="!change" style="cursor: pointer;" @click="add()") New
-    .button--grey(v-if="!change" style="cursor: pointer;" @click="backUp()") Back Up
-    .button--grey(v-if="change" style="cursor: pointer;" @click="changeL()") Edit
-    .button--grey(v-if="change" style="cursor: pointer;" @click="addUser()") Add User
+    .buttons
+      .button--grey(v-if="!change" style="cursor: pointer;" @click="add()") New
+      .button--grey(v-if="!change" style="cursor: pointer;" @click="backUp()") Back Up
+      .button--grey(v-if="change" style="cursor: pointer;" @click="changeL()") Edit
+      .button--grey(v-if="change" style="cursor: pointer;" @click="addUser()") Add User
 </template>
 
 <script>
@@ -113,7 +114,6 @@ export default {
   color: #555;
   text-align: center;
   font-family: 'Roboto Mono';
-  padding: 1em;
   display: flex;
   gap: 20px;
   justify-content: center;

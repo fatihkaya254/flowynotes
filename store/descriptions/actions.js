@@ -31,5 +31,14 @@ export default {
   },
   selectDescription: function(vuexContext, description){
     vuexContext.commit('selectDescription', description)
-  }
+  },
+  setSpeedRead: function(vuexContext, boolean){
+    vuexContext.commit('setSpeedRead', boolean)
+  },
+  setWordPerLine: function(vuexContext, boolean){
+    vuexContext.commit('setWordPerLine', boolean)
+  },
+  setTest: function(vuexContext, boolean){
+    vuexContext.commit('setTest', boolean)
+  },
 }
