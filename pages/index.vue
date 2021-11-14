@@ -4,9 +4,9 @@
       h1(class="title") flowynotes
       form  
         .login
-          input(type="text" placeholder="phone" class="button--grey" v-model="username"  suggested="user-name" autocomplete="on")
-          input(type="password" placeholder="password" class="button--grey"  suggested="current-password" autocomplete="on" v-model="password")
-          .button--grey(style="cursor: pointer;" @click="enter()") Login
+          input(type="text" placeholder="phone" style="border-color: #35495e; color: #35495e;" class="button--grey" v-model="username"  suggested="user-name" autocomplete="on")
+          input(type="password" placeholder="password" style="border-color: #35495e; color: #35495e;" class="button--grey"  suggested="current-password" autocomplete="on" v-model="password")
+          .button--grey(style="cursor: pointer; border-color: #35495e; color: #35495e;" @click="enter()") Login
 </template>
 
 <script>
@@ -30,50 +30,50 @@ export default {
 }
 </script>
 
-<style>
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-.login {
-  flex-direction: column;
-  margin: 20px;
-  gap: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-@keyframes appear {
-  0% {
-    opacity: 0;
-  }
-}
+<style lang="sass" scoped>
 
-.title {
-  animation: 1s appear;
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
+.container 
+  margin: 0 auto
+  min-height: 100vh
+  display: flex
+  justify-content: center
+  align-items: center
+  text-align: center
 
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
+.login 
+  flex-direction: column
+  margin: 20px
+  gap: 10px
+  display: flex
+  justify-content: center
+  align-items: center
+  text-align: center
 
-.links {
-  padding-top: 15px;
-}
+@keyframes appear 
+  0% 
+    opacity: 0
+  
+
+
+.title 
+  animation: 1s appear
+  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif
+  display: block
+  font-weight: 300
+  font-size: 100px
+  color: #35495e
+  letter-spacing: 1px
+  @media screen and (max-width: 920px)
+    font-size: 50px
+.subtitle 
+  font-weight: 300
+  font-size: 42px
+  color: #526488
+  word-spacing: 5px
+  padding-bottom: 15px
+
+
+.links 
+  padding-top: 15px
+
 </style>

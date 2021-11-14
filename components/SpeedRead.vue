@@ -8,7 +8,7 @@
         <input
           type="range"
           min="1"
-          max="5"
+          max="10"
           step="0.5"
           id="speed"
           v-model="speed"
@@ -82,11 +82,10 @@ export default {
         for (const [k, v] of Object.entries(_this.myDesc)) {
           var sentences = v.desc.split(/\s/)
           let i = 0
+          var step = parseInt(_this.hm)
           while (i < sentences.length) {
-            var group = sentences.slice(i, i + _this.hm)
-            console.log(_this.hm)
-            console.log(i)
-            i += _this.hm
+            var group = sentences.slice(i, i + step)
+            i += step
             var w = ''
             for (let j = 0; j < group.length; j++) {
               w += group[j] + ' '

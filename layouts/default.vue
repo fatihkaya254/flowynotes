@@ -33,10 +33,6 @@ html {
   padding: 10px 30px;
 }
 
-.button--green:hover {
-  color: #fff;
-  background-color: #3b8070;
-}
 
 .button--grey {
   display: inline-block;
@@ -49,10 +45,7 @@ html {
   text-align: center;
 }
 
-.button--grey:hover {
-  color: #fff;
-  background-color: #35495e;
-}
+
     .shade {
       position: absolute;
       top: 0;
