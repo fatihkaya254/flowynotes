@@ -1,12 +1,17 @@
 <template lang="pug">
 .background
-    .button--grey(v-for="l in land()" @click="landClick(l._id)") {{l.name}}
-    .button--grey(v-for="r in river()"  @click="riverClick(r._id)") {{r.name}}
-    .stats
+    select(style="color: black;" class= "button--grey" v-model="lid") 
+        option(value="") select land
+        option(v-for="l in land()"  :value="l._id") {{l.name}}
+    select(style="color: black;" class="button--grey" v-model="rid")
+        option( value="") select river
+        option(v-for="r in river()" :value="r._id") {{r.name}}
+    .stats(v-if="rid != ' '")
         div(v-for="k in keyword()" )
                 p {{k.name}} 
                 progress(:value="results[k._id]" max="100") {{results[k._id]}}%
                 span {{results[k._id]}}%
+    .button--grey(style="cursor: pointer;" @click="btb()") Back To Black    
 </template>
 
 <script>
@@ -15,6 +20,8 @@ export default {
   data() {
     return {
         results: {},
+        lid: "",
+        rid: "",
     }
   },
   middleware: ['session-control', 'auth'],
@@ -38,6 +45,9 @@ export default {
         await this.setKeywords({})
         this.getRivers(l)
     },
+    btb: function () {
+      this.$router.push("/")  
+    },
     getStats: function () {
         var keywordList = []
         for (const key in this.keyword()) {
@@ -59,6 +69,14 @@ export default {
   },
   mounted(){
       this.getLands(this.userId())
+  },
+  watch:{
+      lid(val){
+          this.landClick(val)
+      },
+      rid(val){
+          this.riverClick(val)
+      }
   }
 }
 </script>

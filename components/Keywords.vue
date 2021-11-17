@@ -13,12 +13,15 @@ div
       .button--grey(v-if="!selectedKeyword()" style="cursor: pointer;" @click="mix()") Mix
       .button--grey(v-if="!selectedKeyword()" style="cursor: pointer;" @click="tour()") Tour
       .button--grey(v-if="!selectedKeyword()" style="cursor: pointer;" @click="quiz()") Quiz
+      .button--grey(v-if="!selectedKeyword()" style="cursor: pointer;" @click="create()") PDF
       .button--grey(v-if="selectedKeyword()" style="cursor: pointer;" @click="changeL()") Edit
       .button--grey(v-if="selectedKeyword()" style="cursor: pointer;" @click="cancel()") Cancel
   .limit(v-show="limit") Limit is up to 30 keywords
 </template>
 
 <script>
+import { jsPDF } from 'jspdf'
+import { myFont } from '../plugins/invoicefont'
 import { mapActions, mapGetters } from 'vuex'
 export default {
   data() {
@@ -28,9 +31,51 @@ export default {
       id: '',
       change: false,
       limit: false,
+      myDesc: {},
     }
   },
   methods: {
+    create: function () {
+      const doc = new jsPDF()
+      doc.addFileToVFS('MyFont.ttf', myFont())
+      doc.addFont('MyFont.ttf', 'MyFont', 'normal')
+      doc.setFont('MyFont')
+      doc.setFontSize(10)
+      doc.line(0, 20, 250, 20)
+      doc.line(40, 20, 40, 400)
+      doc.text(this.selectedRiver().name, 15, 10)
+      var y = 60
+      var text = ''
+      var next = ''
+      var past = ''
+      var count = 0
+      for (const [k, v] of Object.entries(this.myDesc)) {
+        next = v.keyword
+        if (next != past) {
+          if (count % 6 == 0 && count != 0) {
+            var textlines = doc.splitTextToSize(text, 150)
+            doc.text(textlines, 50, 25)
+            doc.addPage('a4')
+            doc.line(0, 20, 250, 20)
+            doc.line(40, 20, 40, 400)
+            doc.text(this.selectedRiver().name, 15, 10)
+            text = ''
+            y=60
+          }
+          count++
+          text += '\n<' + this.keyword()[next].name + '> \n'
+          var keyw = doc.splitTextToSize(this.keyword()[next].name, 25)
+          doc.text(keyw, 10, y)
+          y += 30
+          past = next
+        }
+
+        text += v.desc + ' \n'
+      }
+      var textlines = doc.splitTextToSize(text, 150)
+      doc.text(textlines, 50, 25)
+      doc.save(this.selectedRiver().name + '.pdf')
+    },
     ...mapActions('keywords', [
       'getKeywords',
       'changeKeyword',
@@ -38,9 +83,14 @@ export default {
       'addKeyword',
       'deleteKeyword',
     ]),
-    ...mapActions('descriptions', ['setSpeedRead', 'setTest', 'setWordPerLine']),
+    ...mapActions('descriptions', [
+      'getDescriptions',
+      'setSpeedRead',
+      'setTest',
+      'setWordPerLine',
+    ]),
     ...mapGetters(['userId']),
-    ...mapGetters('descriptions', ['wordPerLine']),
+    ...mapGetters('descriptions', ['wordPerLine', 'description']),
     ...mapGetters('keywords', [
       'keyword',
       'isKeywordSelected',
@@ -134,7 +184,7 @@ export default {
         for (let x = 1; x < (this.$refs.main.clientWidth - 10) / 50; x++) {
           vertical += 30
           for (let y = 1; y < (this.$refs.main.clientHeight - 20) / 50; y++) {
-            coordinates.push([x * 60, (y * 60 + vertical)])
+            coordinates.push([x * 60, y * 60 + vertical])
           }
         }
         for (let index = 0; index < this.$refs.box.length; index++) {
@@ -148,9 +198,11 @@ export default {
         return
       }
       let coordinates = []
+      var vertical = 10
       for (let x = 0; x < (this.$refs.main.clientWidth - 70) / 150; x++) {
         for (let y = 0; y < (this.$refs.main.clientHeight - 70) / 100; y++) {
-          coordinates.push([(x + 1) * 150, (y + 1) * 100])
+          vertical += 10
+          coordinates.push([(x + 1) * 150, (y + 1) * 100 + vertical])
         }
       }
       for (let index = 0; index < this.$refs.box.length; index++) {
@@ -218,6 +270,12 @@ export default {
   async mounted() {
     await this.getKeywords(this.selectedRiver()._id)
     this.selectKeyword('')
+    for (const [k, v] of Object.entries(this.keyword())) {
+      await this.getDescriptions(k)
+      for (const [k, v] of Object.entries(this.description())) {
+        this.$set(this.myDesc, k, v)
+      }
+    }
     // wait for $refs to be available
     await this.mix()
   },
