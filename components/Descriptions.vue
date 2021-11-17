@@ -6,8 +6,8 @@ div
         h1(class="text-shadow") {{selectedKeyword().name}}
     .form(ref="form")
       input(v-for="d in description()" :style="[changed == d._id ? {color: 'green'} : {}]" type="text" v-model="newDesc[d._id]" :placeholder="d.name" class="new--desc" v-on:keyup.13="edit(d._id)"  )
-      input(type="text" v-model="desc" placeholder="description" class="new--desc" v-on:keyup.13="add()" )
-    .button--grey(style="cursor: pointer;" @click="selectKeyword('')") Close
+      input(type="text" v-model="desc" placeholder="Do not use keywords in descriptions" class="new--desc" v-on:keyup.13="add()" )
+    .button--grey(style="cursor: pointer; max-width: 300px;" @click="selectKeyword('')") Close
 </template>
 
 <script>
@@ -158,9 +158,10 @@ export default {
   padding: 1em;
   height: 60vh;
   display: flex;
-  gap: 20px;
+  gap: 50px;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   width: 80vw;
   max-width: 700px;
   max-height: 500px;

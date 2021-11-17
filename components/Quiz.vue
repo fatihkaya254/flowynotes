@@ -13,7 +13,7 @@
           min="300"
           max="3000"
           step="100"
-          id="speed"
+          id="await"
           v-model="wait"
         )
         | slowdown
@@ -37,6 +37,7 @@ export default {
       kw: '',
       wait: 300,
       fs: 24,
+      waiting: false,
       options: { 0: '', 1: '', 2: '', 3: '', 4: '', 5: '', 6: '', 7: '' },
       correctAnswer: '',
     }
@@ -66,13 +67,17 @@ export default {
       this.setTest(false)
     },
     sendAnswer: async function (keyword, boolean) {
-      this.$axios.post('/newTest', {keyword, boolean, user: this.userId()}).then(res =>{
-          console.log(res.status);
-      })
+      this.$axios
+        .post('/newTest', { keyword, boolean, user: this.userId() })
+        .then((res) => {
+          console.log(res.status)
+        })
     },
     choice: function (k) {
+      if (this.waiting) return
       var keyword = this.options[k]
-      this.$refs['desc'].innerHTML = this.keyword()[keyword].desc
+      this.$refs['desc'].innerHTML = this.keyword()[keyword].name + ": " + this.keyword()[keyword].desc
+      this.waiting = true
       if (this.correctAnswer == keyword) {
         this.$refs[k + 'opt'][0].style.backgroundColor = 'green'
         this.sendAnswer(keyword, 1)
@@ -80,6 +85,7 @@ export default {
           this.readHero()
           this.$refs[k + 'opt'][0].style.backgroundColor = ''
           this.$refs['desc'].innerHTML = ''
+          this.waiting = false
         }, this.wait)
       } else {
         this.sendAnswer(keyword, 0)
@@ -88,6 +94,7 @@ export default {
           this.readHero()
           this.$refs[k + 'opt'][0].style.backgroundColor = ''
           this.$refs['desc'].innerHTML = ''
+          this.waiting = false
         }, this.wait)
       }
     },
@@ -180,6 +187,8 @@ export default {
   margin-top: 0;
   text-align: center;
   font-size: 16px;
+  margin: auto;
+  max-width: 600px;
   color: #ddd;
   cursor: pointer;
   display: flex;
@@ -204,6 +213,8 @@ export default {
   justify-content: center;
   gap: 30px;
   flex: auto;
+  margin: auto;
+  max-width: 600px;
 }
 .option {
   background: rgba(255, 248, 220, 0.145);
@@ -216,9 +227,11 @@ export default {
 }
 #title {
   position: absolute;
+  margin: auto;
   left: 0;
   right: 0;
   top: 25%;
+  max-width: 600px;
   margin-top: -1em;
   text-align: center;
   font-size: 12pt;

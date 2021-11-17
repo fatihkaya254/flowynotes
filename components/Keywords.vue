@@ -64,7 +64,7 @@ export default {
 
     tour: function () {
       let wpl = prompt('Set Word Per Line:', this.wordPerLine())
-      if (isNaN(wpl)) {
+      if (isNaN(wpl) || wpl == 0) {
         alert('Not a Number!')
         return this.tour()
       }

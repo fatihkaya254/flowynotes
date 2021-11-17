@@ -19,6 +19,7 @@ div
       .button--grey(v-if="!change" style="cursor: pointer;" @click="backUp()") Back Up
       .button--grey(v-if="change" style="cursor: pointer;" @click="changeL()") Edit
       .button--grey(v-if="change" style="cursor: pointer;" @click="addUser()") Add User
+      .button--grey(style="cursor: pointer;" @click="myStats()") My Stats
 </template>
 
 <script>
@@ -46,7 +47,9 @@ export default {
       a.download = fileName
       a.click()
     },
-
+    myStats: function () {
+      this.$router.push('/mystats')
+    },
     addUser: async function () {
       var phone = prompt('please enter users phone number')
       await this.$axios
@@ -56,11 +59,13 @@ export default {
         })
     },
     backUp: async function () {
-      await this.$axios
-        .post('/backupAll', { user: this.userId() })
-        .then((res) => {
-          this.download(JSON.stringify(res.data), this.userName() + '\'sFlowiesBackUp.json', 'text/plain')
-        })
+      if (confirm('Download Backup Json')) {
+        await this.$axios
+          .post('/backupAll', { user: this.userId() })
+          .then((res) => {
+            this.download(JSON.stringify(res.data), this.userName() + '\'sFlowiesBackUp.json', 'text/plain')
+        })        
+        }
     },
     add: function () {
       const land = {

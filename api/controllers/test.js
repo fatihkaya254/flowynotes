@@ -73,10 +73,11 @@ exports.new = async (req, res) => {
 
 exports.keywordsTest = async (req, res) => {
   const keyword = req.body.keyword
-  Test.find({ keyword }).then((tests) => {
+  const user = req.body.user
+  Test.find({ keyword : { $in : keyword }, user }).then((tests) => {
     var testMap = {}
     tests.forEach(function (test) {
-      testMap[test._id] = test
+      testMap[test.keyword] = test
     })
     res.send(testMap)
   })

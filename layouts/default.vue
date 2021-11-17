@@ -30,12 +30,14 @@ html {
   border: 1px solid white;
   color: white;
   text-decoration: none;
+    cursor: pointer;
   padding: 10px 30px;
 }
 
 .button--grey {
   display: inline-block;
   border-radius: 4px;
+    cursor: pointer;
   border: 1px solid white;
   color: white;
   text-decoration: none;
@@ -140,10 +142,12 @@ html {
     color: white;
     text-decoration: none;
     padding: 10px 30px;
+    cursor: pointer;
   }
 
   .button--grey {
     display: inline-block;
+    cursor: pointer;
     border-radius: 4px;
     border: 1px solid white;
     color: white;

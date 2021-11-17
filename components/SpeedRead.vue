@@ -3,6 +3,7 @@
     <div id="speedread">
       <div id="title" @click="goBack()"></div>
       <div id="word" @click="goBack()"></div>
+      <div id="dot">&#127827;</div>
       <div id="controls">
         for child of 19
         <input
@@ -16,7 +17,7 @@
         for adult of 27
       </div>
       <div id="controls2">
-        {{wpt}}
+        {{ wpt }}
         <input type="range" min="1" max="6" step="1" id="hm" v-model="hm" />
         {{ hm }}
       </div>
@@ -31,6 +32,7 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import { log } from '~/api/middlewares/log'
 export default {
   head: {
     script: [
@@ -41,7 +43,7 @@ export default {
   },
   data() {
     return {
-      wpt: "word per line",
+      wpt: 'word per line',
       myDesc: {},
       speed: 5,
       kw: '',
@@ -65,6 +67,7 @@ export default {
       'isDescriptionSelected',
       'selectedDescription',
       'wordPerLine',
+      'speedRead',
     ]),
     ...mapGetters('keywords', ['selectedKeyword', 'keyword']),
     goBack: async function () {
@@ -72,10 +75,11 @@ export default {
       this.setSpeedRead(false)
     },
     readHero: function () {
-      var $word, $title, $speed_input, speed, fontSize
+      var $word, $dot, $title, $speed_input, speed, fontSize
       const _this = this
       function go(_this) {
         $word = document.getElementById('word')
+        $dot = document.getElementById('dot')
         $title = document.getElementById('title')
         $speed_input = document.getElementById('speed')
         speed = $speed_input.value
@@ -83,7 +87,7 @@ export default {
           speed = ev.target.value
         }
         var words = []
-        _this.wpt = "word per line"
+        _this.wpt = 'word per line'
         //var words = _this.text.split(/\s/)
         for (const [k, v] of Object.entries(_this.myDesc)) {
           var sentences = v.desc.split(/\s/)
@@ -113,10 +117,13 @@ export default {
           _this.kw = v.keyword
           var title = _this.keyword()[v.keyword].name
           fontSize = _this.fs
-          $word.style.fontSize = fontSize +"px"
+          var margin = parseInt(fontSize,10) + 5;
+          $word.style.fontSize = fontSize + 'px'
+          $dot.style.marginTop = margin + 'px'
           $title.innerHTML = title
           $word.innerHTML = desc
           setTimeout(function () {
+            if (!_this.speedRead()) return
             showWord(words, index + 1)
           }, 3000 / speed)
         } else {
@@ -144,7 +151,7 @@ export default {
       },
       set(value) {
         this.setWordPerLine(value)
-        this.wpt = "next tour awaited"
+        this.wpt = 'next tour awaited'
       },
     },
   },
@@ -172,16 +179,20 @@ export default {
   font-size: 24px;
   color: #ddd;
   cursor: pointer;
-  background: radial-gradient(
-    circle,
-    rgba(255, 0, 0, 1) 16px,
-    rgba(255, 255, 255, 1) 16px
-  );
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  background-clip: text;
-  color: transparent;
 }
+
+#dot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  margin-top: 20px;
+  text-align: center;
+  font-size: 10px;
+  color: #ddd;
+  cursor: pointer;
+}
+
 #title {
   position: absolute;
   left: 0;
