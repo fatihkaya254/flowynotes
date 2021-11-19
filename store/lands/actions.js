@@ -10,8 +10,8 @@ export default {
   },
   addLand: function (vuexContext, land) {
     return this.$axios.post('/newLand', { land }).then((res) => {
-      var newland = res.data.newland
-      vuexContext.commit('newLand', newland)
+      var newLand = res.data.newLand
+      vuexContext.commit('newLand', newLand)
     })
   },
   changeLand(vuexContext, changes) {
