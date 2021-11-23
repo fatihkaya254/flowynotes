@@ -117,11 +117,11 @@ export default {
           _this.kw = v.keyword
           var title = _this.keyword()[v.keyword].name
           fontSize = _this.fs
-          var margin = parseInt(fontSize,10) + 5;
+          var margin = parseInt(fontSize, 10) + 5
           $word.style.fontSize = fontSize + 'px'
           $dot.style.marginTop = margin + 'px'
-          $title.innerHTML = title
-          $word.innerHTML = desc
+          $title.innerHTML = HTMLUtils.escape(title)
+          $word.innerHTML = HTMLUtils.escape(desc)
           setTimeout(function () {
             if (!_this.speedRead()) return
             showWord(words, index + 1)
@@ -130,7 +130,25 @@ export default {
           go(_this)
         }
       }
-
+      var HTMLUtils = new (function () {
+        var rules = [
+          { expression: /&/g, replacement: '&amp;' }, // keep this rule at first position
+          { expression: /</g, replacement: '&lt;' },
+          { expression: />/g, replacement: '&gt;' },
+          { expression: /"/g, replacement: '&quot;' },
+          { expression: /'/g, replacement: '&#039;' }, // or  &#39;  or  &#0039;
+          // &apos;  is not supported by IE8
+          // &apos;  is not defined in HTML 4
+        ]
+        this.escape = function (html) {
+          var result = html
+          for (var i = 0; i < rules.length; ++i) {
+            var rule = rules[i]
+            result = result.replace(rule.expression, rule.replacement)
+          }
+          return result
+        }
+      })()
       go(_this)
     },
   },

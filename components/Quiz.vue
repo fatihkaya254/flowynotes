@@ -76,7 +76,8 @@ export default {
     choice: function (k) {
       if (this.waiting) return
       var keyword = this.options[k]
-      this.$refs['desc'].innerHTML = this.keyword()[keyword].name + ": " + this.keyword()[keyword].desc
+      this.$refs['desc'].innerHTML =
+        this.keyword()[keyword].name + ': ' + this.keyword()[keyword].desc
       this.waiting = true
       if (this.correctAnswer == keyword) {
         this.$refs[k + 'opt'][0].style.backgroundColor = 'green'
@@ -124,7 +125,7 @@ export default {
         var x = 0
         let array = [...$word.children]
         array.forEach((e) => {
-          e.innerHTML = keys[x].name
+          e.innerHTML = HTMLUtils.escape(keys[x].name)
           _this.options[x] = keys[x]._id
           x++
         })
@@ -133,8 +134,27 @@ export default {
           if (v.keyword == _this.correctAnswer) descs.push(v)
         }
         rand = Math.floor(Math.random() * descs.length)
-        $title.innerHTML = descs[rand].desc
+        $title.innerHTML = HTMLUtils.escape(descs[rand].desc)
       }
+      var HTMLUtils = new (function () {
+        var rules = [
+          { expression: /&/g, replacement: '&amp;' }, // keep this rule at first position
+          { expression: /</g, replacement: '&lt;' },
+          { expression: />/g, replacement: '&gt;' },
+          { expression: /"/g, replacement: '&quot;' },
+          { expression: /'/g, replacement: '&#039;' }, // or  &#39;  or  &#0039;
+          // &apos;  is not supported by IE8
+          // &apos;  is not defined in HTML 4
+        ]
+        this.escape = function (html) {
+          var result = html
+          for (var i = 0; i < rules.length; ++i) {
+            var rule = rules[i]
+            result = result.replace(rule.expression, rule.replacement)
+          }
+          return result
+        }
+      })()
       go(_this)
     },
   },
